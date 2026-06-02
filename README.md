@@ -1,46 +1,40 @@
-# 🔄 MHC 1 binding T Cell Epitope Prediction Pipeline
+# 💉 MHC-I T Cell Epitope Prediction Pipeline
 
-A Nextflow-based pipeline for predicting T cell epitopes binding to MHC 1 for a given protein sequence using the IEDB API.
+A Nextflow-based pipeline 🔄 for predicting **MHC-I binding T-cell epitopes** from a target protein sequence using the IEDB API.
 
-## Pipeline Flow
+The pipeline retrieves protein sequences from UniProt, predicts epitopes across the human reference MHC-I allele panel, filters candidates, evaluates similarity against human proteins using BLASTP, and returns top epitope candidates for downstream vaccine design.
 
-- Accepts a UniProt Accession ID as input
-- Retrieves the target protein sequence from Uniprot
-- Retrieves MHC 1 binding T cell epitopes of the sequence for the 27 Human Allele Panel
-- Merges 27 retrieved files into one tsv
-- Filters epitopes with score greater than 0.5
-- Retrieves fasta sequences of the filtered epitopes
-- Checks similarituy with humann genome to avoid auto immune risk by using blastp 
-- Blast results are merged into the existing merged tsv
-- Top n epitopes given by user is slected from each allelel n pident score given by user is ude to slect the top epitopes
+## ✨ Pipeline Workflow
 
-## Requirements
+1. Accepts a UniProt Accession ID as input.
+2. Retrieves the target protein sequence from UniProt.
+3. Predicts MHC-I binding T-cell epitopes using the IEDB API for the 27-allele human reference panel.
+4. Merges prediction results into a single TSV file.
+5. Filters epitopes with prediction scores greater than 0.5.
+6. Generates FASTA sequences for filtered epitopes.
+7. Performs BLASTP against human protein sequences to identify potential self-peptides.
+8. Appends BLAST results to the merged epitope table.
+9. Selects the top n (given by user) epitopes per allele.
+
+## ⚙️ Requirements
 
 - Nextflow >= 24.0
 - Java >= 11
 - BLAST+
 - Python >= 3.10
 - Linux/Unix environment
+- Internet connection for UniProt and IEDB API access
 
-## Repository Structure
+## 🚀 Usage
 
+Clone the repository:
 
-├── main.nf
-├── nextflow.config
-├── modules/
-│   ├── fetch_sequence.nf
-│   ├── blast_search.nf
-│   ├── retrieve_iedb.nf
-│   ├── clean_tsv.nf
-│   └── merge_tsv.nf
-├── bin/
-├── README.md
-└── .gitignore
+```bash
+git clone https://github.com/VarshaS-37/T-Cell-Epitope-Prediction-Pipeline.git
+cd T-Cell-Epitope-Prediction-Pipeline
+```
 
-
-## Usage
-Download all the files
-Run the pipeline with a UniProt accession:
+Run the pipeline:
 
 ```bash
 nextflow run main.nf \
@@ -48,16 +42,15 @@ nextflow run main.nf \
     --top_n 4 \
     --pident_cutoff 80
 ```
-
-### Parameters
+## 🔑 Parameters
 
 | Parameter | Description |
-|-----------|-------------|
+|------------|------------|
 | `--uniprot_id` | UniProt accession of the target protein |
-| `--top_n` | Number of top homologous sequences to retain from each allele|
-| `--pident_cutoff` | Minimum percent identity threshold with human sequnece|
+| `--top_n` | Number of top epitopes to retain per allele |
+| `--pident_cutoff` | Maximum allowed percent identity with human proteins |
 
-## Output
+## 📂 Output
 
 The pipeline generates a consolidated epitope file:
 
@@ -66,23 +59,10 @@ results/
 └── top_epitopes.tsv
 ```
 
-Additional intermediate files are generated during execution for sequence retrieval, BLAST analysis, and epitope processing and stored in results folder.
+Additional intermediate files generated during execution are stored in the `results/` directory.
 
-## Example
+## ⚠️ Limitations
 
-```bash
-nextflow run main.nf \
-    --uniprot_id P59595 \
-    --top_n 10 \
-    --pident_cutoff 80
-```
-
-## Notes
-
-- Internet access is required for sequence and epitope retrieval.
-
-## Limitation
-- this pipleine only predicts epitopes for mhc 1
-- furhetr these epitopes can be checkde for allerginicity toxocoty and poulation covergafe using other tools to create vaccine candidtaes
-
-
+- Supports only MHC-I epitope prediction.
+- Results depend on the availability of UniProt and IEDB web services.
+- Population coverage analysis, Allergenicity and Toxicity prediction is not included.
