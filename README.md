@@ -24,8 +24,7 @@ A Nextflow-based pipeline for predicting T cell epitopes binding to MHC 1 for a 
 
 ## Repository Structure
 
-```text
-.
+
 ├── main.nf
 ├── nextflow.config
 ├── modules/
@@ -37,7 +36,7 @@ A Nextflow-based pipeline for predicting T cell epitopes binding to MHC 1 for a 
 ├── bin/
 ├── README.md
 └── .gitignore
-```
+
 
 ## Usage
 Download all the files
