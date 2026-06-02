@@ -1,18 +1,18 @@
-# T-Cell Epitope Prediction Pipeline
+# 🔄 MHC 1 binding T Cell Epitope Prediction Pipeline
 
-A Nextflow-based pipeline for automated identification and retrieval of experimentally validated T-cell epitopes associated with homologous protein sequences.
+A Nextflow-based pipeline for predicting T cell epitopes binding to MHC 1 for a given protein sequence using the IEDB API.
 
-## Features
+## Pipeline Flow
 
-- Accepts a UniProt accession as input
-- Retrieves the target protein sequence
-- Performs BLAST similarity searches
-- Selects top homologous sequences
-- Filters hits based on user-defined percent identity threshold
-- Retrieves epitope data from IEDB
-- Validates and cleans downloaded TSV files
-- Merges all valid epitope datasets into a single file
-- Modular Nextflow DSL2 workflow
+- Accepts a UniProt Accession ID as input
+- Retrieves the target protein sequence from Uniprot
+- Retrieves MHC 1 binding T cell epitopes of the sequence for the 27 Human Allele Panel
+- Merges 27 retrieved files into one tsv
+- Filters epitopes with score greater than 0.5
+- Retrieves fasta sequences of the filtered epitopes
+- Checks similarituy with humann genome to avoid auto immune risk by using blastp 
+- Blast results are merged into the existing merged tsv
+- Top n epitopes given by user is slected from each allelel n pident score given by user is ude to slect the top epitopes
 
 ## Requirements
 
@@ -40,7 +40,7 @@ A Nextflow-based pipeline for automated identification and retrieval of experime
 ```
 
 ## Usage
-
+Download all the files
 Run the pipeline with a UniProt accession:
 
 ```bash
@@ -55,8 +55,8 @@ nextflow run main.nf \
 | Parameter | Description |
 |-----------|-------------|
 | `--uniprot_id` | UniProt accession of the target protein |
-| `--top_n` | Number of top homologous sequences to retain |
-| `--pident_cutoff` | Minimum percent identity threshold |
+| `--top_n` | Number of top homologous sequences to retain from each allele|
+| `--pident_cutoff` | Minimum percent identity threshold with human sequnece|
 
 ## Output
 
@@ -64,10 +64,10 @@ The pipeline generates a consolidated epitope file:
 
 ```text
 results/
-└── final_iedb.tsv
+└── top_epitopes.tsv
 ```
 
-Additional intermediate files may be generated during execution for sequence retrieval, BLAST analysis, and epitope processing.
+Additional intermediate files are generated during execution for sequence retrieval, BLAST analysis, and epitope processing and stored in results folder.
 
 ## Example
 
@@ -81,10 +81,9 @@ nextflow run main.nf \
 ## Notes
 
 - Internet access is required for sequence and epitope retrieval.
-- Invalid, empty, or error-containing TSV files are automatically filtered out before merging.
-- The pipeline is designed for reproducible and scalable epitope discovery workflows.
 
-## Author
+## Limitation
+- this pipleine only predicts epitopes for mhc 1
+- furhetr these epitopes can be checkde for allerginicity toxocoty and poulation covergafe using other tools to create vaccine candidtaes
 
-S. Varsha
-M.Sc. Bioinformatics
+
